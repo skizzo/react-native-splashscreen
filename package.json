@@ -1,11 +1,11 @@
 {
-  "name": "react-native-splashscreen",
+  "name": "@skizzo/react-native-splashscreen",
   "repository": {
     "type" : "git",
     "url" : "https://github.com/skizzo/react-native-splashscreen.git"
   },
   "version": "0.0.1",
-  "description": "Fork from splash screen",
+  "description": "Skizzo's fork from splash screen, original @ ",
   "author": "",
   "nativePackage": true,
   "keywords": [
