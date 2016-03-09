@@ -19,17 +19,57 @@ static RCTRootView *rootView = nil;
 RCT_EXPORT_MODULE(SplashScreen)
 
 + (void)show:(RCTRootView *)v {
+    
     rootView = v;
-    rootView.loadingViewFadeDelay = 0.1;
-    rootView.loadingViewFadeDuration = 0.1;
+    rootView.loadingViewFadeDelay = 0.2;
+    rootView.loadingViewFadeDuration = 0.6;
+    
+    NSBundle* bundle = [NSBundle mainBundle];
+    
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    CGSize viewSize = [UIScreen mainScreen].bounds.size;
+    NSString* viewOrientation = @"Portrait";
+    if (UIDeviceOrientationIsLandscape(orientation)) {
+        viewSize = CGSizeMake(viewSize.height, viewSize.width);
+        viewOrientation = @"Landscape";
+    }
+    NSString *launchImageName;
+    NSArray* imagesDict = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"UILaunchImages"];
+    for (NSDictionary* dict in imagesDict) {
+        CGSize imageSize = CGSizeFromString(dict[@"UILaunchImageSize"]);
+        if (CGSizeEqualToSize(imageSize, viewSize) && [viewOrientation isEqualToString:dict[@"UILaunchImageOrientation"]])
+            launchImageName = dict[@"UILaunchImageName"];
+    }
+    UIImage *launchImage = [UIImage imageNamed:launchImageName inBundle:bundle compatibleWithTraitCollection:nil];
+    
     UIImageView *view = [[UIImageView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    view.image = [UIImage imageNamed:@"splash"];
+    view.image = launchImage;
     
     [[NSNotificationCenter defaultCenter] removeObserver:rootView  name:RCTContentDidAppearNotification object:rootView];
     
     [rootView setLoadingView:view];
 }
 
+RCT_EXPORT_METHOD(launchImageName:(RCTResponseSenderBlock)callback)
+{
+    NSBundle* bundle = [NSBundle mainBundle];
+    
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    CGSize viewSize = [UIScreen mainScreen].bounds.size;
+    NSString* viewOrientation = @"Portrait";
+    if (UIDeviceOrientationIsLandscape(orientation)) {
+        viewSize = CGSizeMake(viewSize.height, viewSize.width);
+        viewOrientation = @"Landscape";
+    }
+    NSString *launchImageName;
+    NSArray* imagesDict = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"UILaunchImages"];
+    for (NSDictionary* dict in imagesDict) {
+        CGSize imageSize = CGSizeFromString(dict[@"UILaunchImageSize"]);
+        if (CGSizeEqualToSize(imageSize, viewSize) && [viewOrientation isEqualToString:dict[@"UILaunchImageOrientation"]])
+            launchImageName = dict[@"UILaunchImageName"];
+    }
+    callback(@[launchImageName]);
+}
 
 RCT_EXPORT_METHOD(hide) {
     if (!rootView) {
