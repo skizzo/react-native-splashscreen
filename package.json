@@ -5,7 +5,7 @@
     "url" : "https://github.com/skizzo/react-native-splashscreen.git"
   },
   "version": "0.0.1",
-  "description": "Skizzo's fork from splash screen, original @ ",
+  "description": "Skizzo's fork from splash screen, original @ https://github.com/remobile/react-native-splashscreen",
   "author": "",
   "nativePackage": true,
   "keywords": [
