@@ -19,13 +19,11 @@ static RCTRootView *rootView = nil;
 RCT_EXPORT_MODULE(SplashScreen)
 
 + (void)show:(RCTRootView *)v {
-    
+
     rootView = v;
-    rootView.loadingViewFadeDelay = 0.2;
-    rootView.loadingViewFadeDuration = 0.6;
-    
+
     NSBundle* bundle = [NSBundle mainBundle];
-    
+
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     CGSize viewSize = [UIScreen mainScreen].bounds.size;
     NSString* viewOrientation = @"Portrait";
@@ -40,20 +38,21 @@ RCT_EXPORT_MODULE(SplashScreen)
         if (CGSizeEqualToSize(imageSize, viewSize) && [viewOrientation isEqualToString:dict[@"UILaunchImageOrientation"]])
             launchImageName = dict[@"UILaunchImageName"];
     }
+    //launchImageName = @"somethingunknown.jpg";    //  debugging
     UIImage *launchImage = [UIImage imageNamed:launchImageName inBundle:bundle compatibleWithTraitCollection:nil];
-    
+
     UIImageView *view = [[UIImageView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     view.image = launchImage;
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:rootView  name:RCTContentDidAppearNotification object:rootView];
-    
+
     [rootView setLoadingView:view];
 }
 
 RCT_EXPORT_METHOD(launchImageName:(RCTResponseSenderBlock)callback)
 {
     NSBundle* bundle = [NSBundle mainBundle];
-    
+
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     CGSize viewSize = [UIScreen mainScreen].bounds.size;
     NSString* viewOrientation = @"Portrait";
@@ -71,15 +70,15 @@ RCT_EXPORT_METHOD(launchImageName:(RCTResponseSenderBlock)callback)
     callback(@[launchImageName]);
 }
 
-RCT_EXPORT_METHOD(hide) {
+RCT_EXPORT_METHOD(hide:(float) delay duration:(float)duration) {
     if (!rootView) {
         return;
     }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(rootView.loadingViewFadeDuration * NSEC_PER_SEC)),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
                    dispatch_get_main_queue(),
                    ^{
                        [UIView transitionWithView: rootView
-                                         duration:rootView.loadingViewFadeDelay
+                                         duration:duration
                                           options:UIViewAnimationOptionTransitionCrossDissolve
                                        animations:^{
                                            rootView.loadingView.hidden = YES;
