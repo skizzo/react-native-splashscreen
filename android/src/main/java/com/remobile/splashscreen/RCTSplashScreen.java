@@ -41,14 +41,19 @@ public class RCTSplashScreen extends ReactContextBaseJavaModule {
         return activity;
     }
 
+    private int fadeDelay;
+    private int fadeDuration;
+
     @ReactMethod
-    public void hide() {
+    public void hide(float delay, float duration) {
+        fadeDelay = Math.round(delay * 1000);
+        fadeDuration = Math.round(duration * 1000);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 removeSplashScreen();
             }
-        }, 500);
+        }, fadeDelay);
     }
 
 
@@ -57,7 +62,7 @@ public class RCTSplashScreen extends ReactContextBaseJavaModule {
             public void run() {
                 if (splashDialog != null && splashDialog.isShowing()) {
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
-                    fadeOut.setDuration(1000);
+                    fadeOut.setDuration(fadeDuration);
                     View view = ((ViewGroup)splashDialog.getWindow().getDecorView()).getChildAt(0);
                     view.startAnimation(fadeOut);
                     fadeOut.setAnimationListener(new Animation.AnimationListener() {
